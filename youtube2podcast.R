@@ -12,7 +12,7 @@ if(file.exists(args[length(args)])){
 	}
 }
 if(file.exists(channels)){
-	ch<-read.table(file=channels,sep='\t')
+	ch<-read.table(file=channels,sep='\t',colClasses = "character")
 } else {
 	print("channels.tsv not found!")
 	quit()
