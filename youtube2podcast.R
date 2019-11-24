@@ -3,11 +3,20 @@ args<-commandArgs()
 if(file.exists(args[length(args)])){
 	source(args[length(args)])
 } else {
-	podcastsdir <- paste0(getwd(),"/")
-	podcastsurl <- "http://podcasts.mydomain.info/"
-	channels    <- paste0(podcastsdir,"channels.tsv")
+	if(file.exists("config.ini")){
+		source("config.ini")
+	} else {
+		podcastsdir <- paste0(getwd(),"/")
+		podcastsurl <- "http://podcasts.mydomain.info/"
+		channels    <- paste0(podcastsdir,"channels.tsv")
+	}
 }
-ch<-read.table(file=channels,sep='\t')
+if(file.exists(channels)){
+	ch<-read.table(file=channels,sep='\t')
+} else {
+	print("channels.tsv not found!")
+	quit()
+}
 opml<-"<opml version=\"1.1\">\n<body><outline text=\"YouTube2podcast.R\" title=\"YouTube2podcast.R\">"
 for(i in 1:nrow(ch)){
 	dir.create(paste0(podcastsdir,ch[i,"name"]),recursive = TRUE)
