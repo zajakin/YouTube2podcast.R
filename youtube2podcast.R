@@ -21,9 +21,10 @@ opml<-"<opml version=\"1.1\">\n<body><outline text=\"YouTube2podcast.R\" title=\
 for(i in 1:nrow(ch)){
 	dir.create(paste0(podcastsdir,ch[i,"name"]),recursive = TRUE)
 	system(paste0("youtube-dl -i --yes-playlist --write-description --write-thumbnail --embed-thumbnail ",
-		" --download-archive \"",podcastsdir,ch[i,"name"],"/.done\" ",
-		"-o \"",podcastsdir,ch[i,"name"],"/%(title)s+%(upload_date)s+%(duration)05d+%(id)s.%(ext)s\" ",
-		"-x -f bestaudio --audio-format mp3 --audio-quality 4 https://www.youtube.com/",ch[i,"type"],ch[i,"id"]," "))
+		" --download-archive \"",podcastsdir,ch[i,"name"],"/.done\" -x -f bestaudio --audio-format mp3",
+		" --prefer-ffmpeg --postprocessor-args \"-af silenceremove=start_periods=1:stop_periods=-1:stop_duration=3:stop_threshold=-40dB\" ",
+		" -o \"",podcastsdir,ch[i,"name"],"/%(title)s+%(upload_date)s+%(duration)05d+%(id)s.%(ext)s\" ",
+		" --audio-quality 4 https://www.youtube.com/",ch[i,"type"],ch[i,"id"]," "))
 	mp3 <- sub(".mp3$","",dir(path=paste0(podcastsdir,ch[i,"name"]),pattern = "*.mp3"))
 	mp3 <- mp3[order(-as.numeric(apply(cbind(mp3),1,function(x){ y<-strsplit(x,'\\+')[[1]]; y[length(y)-2] })))]
 	pic<-paste0("href=\"",podcastsurl,URLencode(ch[i,"name"],reserved = TRUE),"/",URLencode(mp3[1],reserved = TRUE),".jpg\"")
@@ -50,3 +51,6 @@ for(i in 1:nrow(ch)){
 }
 opml <- paste0(c(opml,"</outline></body></opml>"))
 cat(opml,file=paste0(podcastsdir,"rss.opml"),sep="")
+## recode mp3  -vn 
+# find *.mp3 -exec ffmpeg -i "{}" -acodec libmp3lame -q:a 4 -af "silenceremove=start_periods=1:stop_periods=-1:stop_duration=3:stop_threshold=-40dB" -vsync 2 "silenced/{}" \;
+# find *.mp3 -exec touch -c -r "{}" "silenced/{}" \;
