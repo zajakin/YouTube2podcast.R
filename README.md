@@ -16,11 +16,11 @@ I recommend:
 07 04 * * * Rscript --vanilla /home/<user>/bin/youtube2podcast.R /home/<user>/public/podcasts/config.ini
 ```
 
-Or Docker image:
+If you prefere Docker image:
 ```
 docker pull zajakin/youtube2podcastr && docker run --rm -v `pwd`:/podcasts zajakin/youtube2podcastr
 ```
-
+cron:
 ```cron
 07 04 * * * Rscript --vanilla docker pull zajakin/youtube2podcastr && cd /home/<user>/public/podcasts/ && docker run --rm -v `pwd`:/podcasts zajakin/youtube2podcastr
 ```
