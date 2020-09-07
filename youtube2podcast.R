@@ -23,7 +23,7 @@ ch<-read.table(file=channels,sep='\t',colClasses = "character")
 opml<-"<opml version=\"1.1\">\n<body><outline text=\"YouTube2podcast.R\" title=\"YouTube2podcast.R\">"
 for(i in 1:nrow(ch)){
 	if(!dir.exists(paste0(podcastsdir,ch[i,"name"]))) dir.create(paste0(podcastsdir,ch[i,"name"]),recursive = TRUE, mode = "0777")
-	system(paste0(youtubedl," -i --yes-playlist --write-description --write-thumbnail --embed-thumbnail ",
+	system(paste0("LC_ALL=en_US.UTF-8 youtube-dl -i --yes-playlist --write-description --write-thumbnail --embed-thumbnail ",
 		" --download-archive \"",podcastsdir,ch[i,"name"],"/.done\" -x -f bestaudio --audio-format mp3",
 		" --prefer-ffmpeg --postprocessor-args \"-af silenceremove=start_periods=1:stop_periods=-1:stop_duration=3:stop_threshold=-40dB\" ",
 		" -o \"",podcastsdir,ch[i,"name"],"/%(title)s+%(upload_date)s+%(duration)05d+%(id)s.%(ext)s\" ",
