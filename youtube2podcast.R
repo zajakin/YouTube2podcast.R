@@ -20,7 +20,7 @@ if(file.exists(channels)){
 opml<-"<opml version=\"1.1\">\n<body><outline text=\"YouTube2podcast.R\" title=\"YouTube2podcast.R\">"
 for(i in 1:nrow(ch)){
 	dir.create(paste0(podcastsdir,ch[i,"name"]),recursive = TRUE)
-	system(paste0("youtube-dl -i --yes-playlist --write-description --write-thumbnail --embed-thumbnail ",
+	system(paste0(youtubedl," -i --yes-playlist --write-description --write-thumbnail --embed-thumbnail ",
 		" --download-archive \"",podcastsdir,ch[i,"name"],"/.done\" -x -f bestaudio --audio-format mp3",
 		" --prefer-ffmpeg --postprocessor-args \"-af silenceremove=start_periods=1:stop_periods=-1:stop_duration=3:stop_threshold=-40dB\" ",
 		" -o \"",podcastsdir,ch[i,"name"],"/%(title)s+%(upload_date)s+%(duration)05d+%(id)s.%(ext)s\" ",
