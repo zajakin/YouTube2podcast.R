@@ -22,5 +22,5 @@ docker pull zajakin/youtube2podcastr && docker run --rm -v `pwd`:/podcasts zajak
 ```
 cron:
 ```cron
-07 04 * * * Rscript --vanilla docker pull zajakin/youtube2podcastr && cd /home/<user>/public/podcasts/ && docker run --rm -v `pwd`:/podcasts zajakin/youtube2podcastr
+07 04 * * * docker pull zajakin/youtube2podcastr && cd /home/<user>/public/podcasts/ && docker run --rm -v `pwd`:/podcasts zajakin/youtube2podcastr
 ```
