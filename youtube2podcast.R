@@ -1,22 +1,25 @@
 #!/usr/bin/env Rscript --vanilla
 args<-commandArgs()
-if(file.exists(args[length(args)])){
-	source(args[length(args)])
-} else {
-	if(file.exists("config.ini")){
-		source("config.ini")
-	} else {
-		podcastsdir <- paste0(getwd(),"/")
-		podcastsurl <- "http://podcasts.mydomain.info/"
-		channels    <- paste0(podcastsdir,"channels.tsv")
-	}
+conf<-args[length(args)]
+if(length(grep("config.ini$",conf))==0) conf <- "config.ini"
+if(!file.exists(conf)){
+	print(paste("config.ini not found! I will create sample file for you."))
+	wd<-sub("config.ini$","",conf)
+	if(wd!="" && !dir.exists(wd)) dir.create(wd,recursive = TRUE, mode = "0777")
+	cat(c('podcastsdir = "./"','podcastsurl = "http://podcasts.mydomain.info/"',
+		 'channels    = "./channels.tsv"','youtubedl   = "youtube-dl"'),file=conf,sep="\n")
 }
-if(file.exists(channels)){
-	ch<-read.table(file=channels,sep='\t',colClasses = "character")
-} else {
-	print("channels.tsv not found!")
-	quit()
+source(conf)
+
+if(!file.exists(channels)){
+	print(paste("channels.tsv not found! I will create sample file for you."))
+	wd<-sub("channels.tsv$","",conf)
+	if(wd!="" && !dir.exists(sub("channels.tsv$","",channels))) dir.create(sub("channels.tsv$","",channels),recursive = TRUE, mode = "0777")
+	cat(c('"name"	"id"	"type"','"1"	"Save Russian education in Latvia"	"UCnNAijNguxn8lo3aVT8fBXA"	"channel/"',
+			'"2"	"Zaz"	"PLGpfjoJVRqU4guesWbHD6SW6EvQCeL__R"	"playlist?list="'),file=channels,sep="\n")
 }
+ch<-read.table(file=channels,sep='\t',colClasses = "character")
+
 opml<-"<opml version=\"1.1\">\n<body><outline text=\"YouTube2podcast.R\" title=\"YouTube2podcast.R\">"
 for(i in 1:nrow(ch)){
 	dir.create(paste0(podcastsdir,ch[i,"name"]),recursive = TRUE)
