@@ -6,21 +6,21 @@ Convert YouTube channels and playlists to MP3 podcasts using youtube-dl https://
 
 Usage:
 ```shell
-Rscript --vanilla youtube2podcast.R [config.ini]
+Rscript --vanilla youtube2podcast.R [<path>/config.ini]
 ```
 
 I recommend:
  * place "youtube2podcast.R" to your "~/bin" folder
  * add line like this to your cron (with command "crontab -u USER -e"):
 ```cron
-07 04 * * * Rscript --vanilla /home/<user>/bin/youtube2podcast.R /home/<user>/public/podcasts/config.ini
+07 04 * * * Rscript --vanilla /home/<user>/bin/youtube2podcast.R <path>/config.ini
 ```
 
-If you prefere Docker image:
+If you prefere Docker image(~500MB):
 ```
-docker pull zajakin/youtube2podcastr && docker run --rm -v `pwd`:/podcasts zajakin/youtube2podcastr
+docker pull zajakin/youtube2podcastr && docker run --rm -v <path>/podcasts:/podcasts zajakin/youtube2podcastr
 ```
 cron:
 ```cron
-07 04 * * * docker pull zajakin/youtube2podcastr && cd /home/<user>/public/podcasts/ && docker run --rm -v `pwd`:/podcasts zajakin/youtube2podcastr
+07 04 * * * docker pull zajakin/youtube2podcastr && docker run --rm -v <path>/podcasts:/podcasts zajakin/youtube2podcastr
 ```

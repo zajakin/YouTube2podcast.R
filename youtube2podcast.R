@@ -6,7 +6,7 @@ if(!file.exists(conf)){
 	print(paste("config.ini not found! I will create sample file for you."))
 	wd<-sub("config.ini$","",conf)
 	if(wd!="" && !dir.exists(wd)) dir.create(wd,recursive = TRUE, mode = "0777")
-	cat(c('podcastsdir = "."','podcastsurl = "http://podcasts.mydomain.info/"',
+	cat(c('podcastsdir = "./"','podcastsurl = "http://podcasts.mydomain.info/"',
 		 'channels    = "channels.tsv"','youtubedl   = "LC_ALL=en_US.UTF-8 youtube-dl"'),file=conf,sep="\n")
 }
 source(conf)
