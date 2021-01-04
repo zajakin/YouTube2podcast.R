@@ -27,7 +27,7 @@ for(i in 1:nrow(ch)){
 		" --download-archive \"",podcastsdir,ch[i,"name"],"/.done\" -x -f bestaudio --audio-format mp3",
 		" --prefer-ffmpeg --postprocessor-args \"-af silenceremove=start_periods=1:stop_periods=-1:stop_duration=3:stop_threshold=-40dB\" ",
 		" -o \"",podcastsdir,ch[i,"name"],"/%(title)s+%(upload_date)s+%(duration)05d+%(id)s.%(ext)s\" ",
-		" --audio-quality 4 https://www.youtube.com/",ch[i,"type"],ch[i,"id"]," "))
+		" --audio-quality 4 https://www.youtube.com/",ch[i,"type"],ch[i,"id"]," "),intern = TRUE)
 	mp3 <- sub(".mp3$","",dir(path=paste0(podcastsdir,ch[i,"name"]),pattern = "*.mp3"))
 	mp3 <- mp3[order(-as.numeric(apply(cbind(mp3),1,function(x){ y<-strsplit(x,'\\+')[[1]]; y[length(y)-2] })))]
 	pic<-paste0("href=\"",podcastsurl,URLencode(ch[i,"name"],reserved = TRUE),"/",URLencode(mp3[1],reserved = TRUE),".jpg\"")
