@@ -18,9 +18,9 @@ I recommend:
 
 If you prefere Docker image(~500MB):
 ```
-docker pull zajakin/youtube2podcastr && docker run --rm -v <path>/podcasts:/podcasts zajakin/youtube2podcastr
+docker pull ghcr.io/zajakin/youtube2podcastr && docker run --rm -v <path>/podcasts:/podcasts ghcr.io/zajakin/youtube2podcastr
 ```
 cron:
 ```cron
-07 04 * * * docker pull zajakin/youtube2podcastr && docker run --rm -v <path>/podcasts:/podcasts zajakin/youtube2podcastr
+07 04 * * * docker pull ghcr.io/zajakin/youtube2podcastr && docker run --rm -v <path>/podcasts:/podcasts ghcr.io/zajakin/youtube2podcastr
 ```
