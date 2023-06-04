@@ -16,3 +16,4 @@ COPY youtube2podcast.R /usr/local/bin/youtube2podcast.R
 RUN chmod a+rx /usr/local/bin/youtube2podcast.R
 WORKDIR /podcasts
 ENTRYPOINT ["/usr/bin/env","Rscript","--vanilla","/usr/local/bin/youtube2podcast.R","config.ini"]
+ 
