@@ -3,7 +3,7 @@ RUN env DEBIAN_FRONTEND=noninteractive apt-get update && \
 	env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends apt-utils && \
 	env DEBIAN_FRONTEND=noninteractive apt-get dist-upgrade -y --no-install-recommends && \
 	env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-		locales r-base-core ffmpeg youtube-dl && \
+		locales r-base-core ffmpeg yt-dlp && \
 	apt-get autoremove -y && \
 	apt-get autoclean -y && \
 	sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.utf8 UTF-8/' /etc/locale.gen && \

@@ -25,8 +25,8 @@ for(i in 1:nrow(ch)){
 	if(!dir.exists(paste0(podcastsdir,ch[i,"name"]))) dir.create(paste0(podcastsdir,ch[i,"name"]),recursive = TRUE, mode = "0777")
 	system(paste0(youtubedl," -i --yes-playlist --write-description --write-thumbnail --embed-thumbnail ",
 		" --download-archive \"",podcastsdir,ch[i,"name"],"/.done\" -x -f bestaudio --audio-format mp3",
-		" --prefer-ffmpeg --postprocessor-args \"-af silenceremove=start_periods=1:stop_periods=-1:stop_duration=3:stop_threshold=-40dB\" ",
-		" -o \"",podcastsdir,ch[i,"name"],"/%(title)s+%(upload_date)s+%(duration)05d+%(id)s.%(ext)s\" ",
+		# " --prefer-ffmpeg --postprocessor-args \"-af silenceremove=start_periods=1:stop_periods=-1:stop_duration=3:stop_threshold=-40dB\" ",
+		" -o \"",podcastsdir,ch[i,"name"],"/%(title)s+%(upload_date)s+%(duration)05d+%(id)s.%(ext)s\" --windows-filenames ",
 		" --audio-quality 4 https://www.youtube.com/",ch[i,"type"],ch[i,"id"]," "),intern = TRUE)
 	mp3 <- sub(".mp3$","",dir(path=paste0(podcastsdir,ch[i,"name"]),pattern = "*.mp3"))
 	mp3 <- mp3[order(-as.numeric(apply(cbind(mp3),1,function(x){ y<-strsplit(x,'\\+')[[1]]; y[length(y)-2] })))]
@@ -40,12 +40,14 @@ for(i in 1:nrow(ch)){
 		id <- all[(length(all)-2):length(all)]
 		title <- sub("&"," ",sub(paste(c("",id),collapse = "\\+"),"",m))
 		desc <- sub("&","&amp;",paste(readLines(paste0(podcastsdir,ch[i,"name"],"/",m,".description"), warn = FALSE),collapse = "<br />"))
-		rss <- paste0(c(rss,"\n<item>\n\t<title>",title,"</title>\n\t<description><![CDATA[<a href=\"https://www.youtube.com/watch?v=",
-			id[3],"\">\n\tVideo on Youtube<img src=\"",podcastsurl,URLencode(ch[i,"name"],reserved = TRUE),"/",URLencode(m,reserved = TRUE),
-			".jpg\" /></a><p>",desc,"</p>]]></description>\n\t<pubDate>",format(as.Date(id[1],format="%Y%m%d"),format="%a, %d %b %Y %T %Z"),
-			"</pubDate>\n\t<enclosure url=\"",podcastsurl,URLencode(ch[i,"name"],reserved = TRUE),"/",URLencode(m,reserved = TRUE),
-			".mp3\" type=\"audio/mp3\" length=\"",file.size(paste0(podcastsdir,ch[i,"name"],"/",m,".mp3")),"\" />\n\t<itunes:duration>",id[2],
-			"</itunes:duration>\n\t<guid isPermaLink=\"false\">",id[3],"</guid>\n</item>"))
+		pic<-paste0(podcastsurl,URLencode(ch[i,"name"],reserved = TRUE),"/",URLencode(m,reserved = TRUE),".webp")
+		if(!file.exists(paste0(ch[i,"name"],"/",m,".webp"))) pic<-sub(".webp$",".jpg",pic)
+		rss <- paste0(c(rss,"\n<item>\n\t<title>",title,"</title>\n\t<description><![CDATA[<a href=\"https://www.youtube.com/watch?v=",id[3],"\">\n",
+			"\tVideo on Youtube<img src=\"",pic,"\" /></a><p>",desc,"</p>]]></description>\n",
+			"\t<pubDate>",format(as.Date(id[1],format="%Y%m%d"),format="%a, %d %b %Y %T %Z"),"</pubDate>\n",
+			"\t<enclosure url=\"",podcastsurl,URLencode(ch[i,"name"],reserved = TRUE),"/",URLencode(m,reserved = TRUE),
+			".mp3\" type=\"audio/mp3\" length=\"",file.size(paste0(podcastsdir,ch[i,"name"],"/",m,".mp3")),"\" />\n",
+			"\t<itunes:duration>",id[2],"</itunes:duration>\n\t<guid isPermaLink=\"false\">",id[3],"</guid>\n</item>"))
 	}
 	rss <- paste0(c(rss,"\n</channel>\n</rss>"))
 	cat(rss,file=paste0(podcastsdir,ch[i,"name"],"/rss.xml"),sep="")

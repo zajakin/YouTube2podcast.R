@@ -1,5 +1,5 @@
 # YouTube2podcast.R
-Convert YouTube channels and playlists to MP3 podcasts using youtube-dl https://ytdl-org.github.io/youtube-dl/.
+Convert YouTube channels and playlists to MP3 podcasts using yt-dlp https://github.com/yt-dlp/yt-dlp.
  *	As result video channel will be converted to the folder with MP3 files, thumbnails and descriptions per each video.
  * "rss.xml" files per each folder(channel) will be generated in the next step.
  * "rss.opml" for all folders(channels) will be produced at the end.
