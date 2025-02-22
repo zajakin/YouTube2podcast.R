@@ -1,19 +1,19 @@
 #!/usr/bin/env Rscript --vanilla
 args<-commandArgs()
 conf<-args[length(args)]
-if(length(grep("config.ini$",conf))==0) conf <- "config.ini"
+if(!grepl("config.ini$",conf)) conf <- "config.ini"
 if(!file.exists(conf)){
 	print(paste("config.ini not found! I will create sample file for you."))
 	wd<-sub("config.ini$","",conf)
 	if(wd!="" && !dir.exists(wd)) dir.create(wd,recursive = TRUE, mode = "0777")
 	cat(c('podcastsdir = "./"','podcastsurl = "http://podcasts.mydomain.info/"',
-		 'channels    = "channels.tsv"','youtubedl   = "LC_ALL=en_US.UTF-8 youtube-dl"'),file=conf,sep="\n")
+		 paste0('channels    = ',wd,"channels.tsv"),'youtubedl   = "LC_ALL=en_US.UTF-8 youtube-dl"'),file=conf,sep="\n")
 }
 source(conf)
 
 if(!file.exists(channels)){
 	print(paste("channels.tsv not found! I will create sample file for you."))
-	wd<-sub("channels.tsv$","",conf)
+	wd<-sub("channels.tsv$","",channels)
 	if(wd!="" && !dir.exists(sub("channels.tsv$","",channels))) dir.create(sub("channels.tsv$","",channels),recursive = TRUE, mode = "0777")
 	cat(c('"name"	"id"	"type"','"1"	"Save Russian education in Latvia"	"UCnNAijNguxn8lo3aVT8fBXA"	"channel/"',
 			'"2"	"Zaz"	"PLGpfjoJVRqU4guesWbHD6SW6EvQCeL__R"	"playlist?list="'),file=channels,sep="\n")
@@ -23,11 +23,11 @@ ch<-read.table(file=channels,sep='\t',colClasses = "character")
 opml<-"<opml version=\"1.1\">\n<body><outline text=\"YouTube2podcast.R\" title=\"YouTube2podcast.R\">"
 for(i in 1:nrow(ch)){
 	if(!dir.exists(paste0(podcastsdir,ch[i,"name"]))) dir.create(paste0(podcastsdir,ch[i,"name"]),recursive = TRUE, mode = "0777")
-	system(paste0(youtubedl," -i --yes-playlist --write-description --write-thumbnail --embed-thumbnail ",
-		" --download-archive \"",podcastsdir,ch[i,"name"],"/.done\" -x -f bestaudio --audio-format mp3",
-		# " --prefer-ffmpeg --postprocessor-args \"-af silenceremove=start_periods=1:stop_periods=-1:stop_duration=3:stop_threshold=-40dB\" ",
-		" -o \"",podcastsdir,ch[i,"name"],"/%(title)s+%(upload_date)s+%(duration)05d+%(id)s.%(ext)s\" --windows-filenames ",
+	system(paste0(youtubedl," --live-from-start --yes-playlist --write-description --write-thumbnail --embed-thumbnail ",
+		" --download-archive '",podcastsdir,ch[i,"name"],"/.done' -x -f bestaudio --audio-format mp3 --max-downloads 100 ",
+		" -o '",podcastsdir,ch[i,"name"],"/%(title)s+%(upload_date)s+%(duration)05d+%(id)s.%(ext)s' --windows-filenames ",
 		" --audio-quality 4 https://www.youtube.com/",ch[i,"type"],ch[i,"id"]," "),intern = TRUE)
+	# " --prefer-ffmpeg --postprocessor-args \"-af silenceremove=start_periods=1:stop_periods=-1:stop_duration=3:stop_threshold=-40dB\" ",
 	mp3 <- sub(".mp3$","",dir(path=paste0(podcastsdir,ch[i,"name"]),pattern = "*.mp3"))
 	mp3 <- mp3[order(-as.numeric(apply(cbind(mp3),1,function(x){ y<-strsplit(x,'\\+')[[1]]; y[length(y)-2] })))]
 	pic<-paste0("href=\"",podcastsurl,URLencode(ch[i,"name"],reserved = TRUE),"/",URLencode(mp3[1],reserved = TRUE),".jpg\"")
